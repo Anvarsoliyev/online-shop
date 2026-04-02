@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - BFF Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans p-6">
+
+    <div class="container mx-auto max-w-4xl">
+        <div class="flex justify-between items-center mb-10">
+            <h1 class="text-3xl font-bold text-blue-400">Admin Panel</h1>
+            <a href="index.html" class="bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600">Saytga qaytish</a>
+        </div>
+
+        <div class="bg-gray-800 p-8 rounded-2xl shadow-xl mb-12 border border-gray-700">
+            <h3 class="text-xl font-bold mb-6 text-blue-300">Yangi mahsulot qo'shish</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="pName" placeholder="Mahsulot nomi" class="bg-gray-700 border-none p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                <input type="text" id="pPrice" placeholder="Narxi (masalan: 500 000 so'm)" class="bg-gray-700 border-none p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                <select id="pCategory" class="bg-gray-700 border-none p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                    <option value="Elektronika">Elektronika</option>
+                    <option value="Kiyim">Kiyim</option>
+                    <option value="Aksessuar">Aksessuar</option>
+                    <option value="Parfumeriya">Parfumeriya</option>
+                </select>
+                <input type="text" id="pImg" placeholder="Rasm URL manzili" class="bg-gray-700 border-none p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                <button onclick="addProduct()" class="md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all">SAYTGA QO'SHISH</button>
+            </div>
+        </div>
+
+        <h3 class="text-xl font-bold mb-6 text-red-400">Mavjud mahsulotlarni boshqarish</h3>
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-800">
+            </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Faqat admin panelda o'chirish tugmasi ko'rinishi uchun kichik qo'shimcha
+        window.isAdmin = true; 
+    </script>
+</body>
+</html>

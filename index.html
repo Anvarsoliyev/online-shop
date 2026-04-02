@@ -5,22 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Shop BFF</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .dark { background-color: #1a202c; color: white; }
+        .dark nav, .dark .bg-white { background-color: #2d3748; color: white; }
+        .dark .text-gray-800 { color: #f7fafc; }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100 font-sans transition-colors duration-300">
 
     <nav class="bg-white shadow-lg p-4 sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-2xl font-bold text-blue-600">ONLINE SHOP BFF</h1>
-            <button onclick="showCart()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-semibold">
-                Savatcha (0)
-            </button>
- <button onclick="toggleDarkMode()" id="dark-mode-btn" class="bg-gray-200 text-gray-800 px-3 py-2 rounded-lg hover:bg-gray-300 transition-all ml-2">
-                🌙
-            </button>
-
-            <button onclick="showWishlist()" class="bg-red-100 text-red-600 px-3 py-2 rounded-lg hover:bg-red-200 transition-all ml-2">
-                ❤️ (<span id="wishlist-count">0</span>)
-            </button>
+            <div class="flex items-center gap-2">
+                <button onclick="showCart()" id="cart-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-semibold">
+                    Savatcha (0)
+                </button>
+                <button onclick="toggleDarkMode()" id="dark-mode-btn" class="bg-gray-200 text-gray-800 px-3 py-2 rounded-lg hover:bg-gray-300 transition-all">
+                    🌙
+                </button>
+                <button onclick="showWishlist()" class="bg-red-100 text-red-600 px-3 py-2 rounded-lg hover:bg-red-200 transition-all">
+                    ❤️ (<span id="wishlist-count">0</span>)
+                </button>
+            </div>
         </div>
     </nav>
 
@@ -28,15 +34,14 @@
         <h2 class="text-4xl font-extrabold mb-2">Sifatli mahsulotlar markazi</h2>
         <p class="text-lg text-blue-100">Xitoy, Koreya va Yaponiyadan sara tovarlar</p>
     </header>
-<section class="container mx-auto px-4 mt-8">
+
+    <section class="container mx-auto px-4 mt-8">
         <div class="flex flex-col md:flex-row gap-4 justify-between items-center bg-white p-4 rounded-2xl shadow-sm">
-            
             <div class="relative w-full md:w-1/3">
                 <input type="text" id="searchInput" onkeyup="filterProducts()" placeholder="Mahsulot qidirish..." 
-                    class="w-full pl-10 pr-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <span class="absolute left-3 top-2.5 text-gray-400">🔍</span>
+                    class="w-full pl-10 pr-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800">
+                <span class="absolute left-3 top-2.5">🔍</span>
             </div>
-
             <div class="flex gap-2 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto">
                 <button onclick="filterCategory('all')" class="bg-blue-100 text-blue-600 px-4 py-2 rounded-lg font-medium">Hammasi</button>
                 <button onclick="filterCategory('Elektronika')" class="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg font-medium">Elektronika</button>
@@ -45,71 +50,12 @@
             </div>
         </div>
     </section>
+
     <main class="container mx-auto py-10 px-4">
         <h3 class="text-2xl font-bold mb-8 text-gray-800 border-b-2 border-blue-500 inline-block">Bizning mahsulotlar</h3>
-        
         <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            
-            <div class="bg-white p-5 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300">
-                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" class="w-full h-48 object-cover rounded-xl mb-4">
-                <h4 class="font-bold text-lg text-gray-800">Smart Watch Series 7</h4>
-                <p class="text-gray-500 text-sm mb-4 h-10 overflow-hidden">Suvga chidamli aqlli soat.</p>
-                <div class="flex justify-between items-center">
-                    <span class="text-blue-600 font-bold">450 000 so'm</span>
-                    <button onclick="addToCart('Smart Watch Series 7', '450 000 so\'m')" class="bg-green-500 text-white w-10 h-10 rounded-full hover:bg-green-600 flex items-center justify-center font-bold">+</button>
-                </div>
             </div>
-
-            <div class="bg-white p-5 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300">
-                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" class="w-full h-48 object-cover rounded-xl mb-4">
-                <h4 class="font-bold text-lg text-gray-800">Wireless Headphones</h4>
-                <p class="text-gray-500 text-sm mb-4 h-10 overflow-hidden">Toza ovozli quloqchinlar.</p>
-                <div class="flex justify-between items-center">
-                    <span class="text-blue-600 font-bold">320 000 so'm</span>
-                    <button onclick="addToCart('Wireless Headphones', '320 000 so\'m')" class="bg-green-500 text-white w-10 h-10 rounded-full hover:bg-green-600 flex items-center justify-center font-bold">+</button>
-                </div>
-            </div>
-
-            <div class="bg-white p-5 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300">
-                <img src="https://images.unsplash.com/photo-1526170315870-350fe4c82811?w=500" class="w-full h-48 object-cover rounded-xl mb-4">
-                <h4 class="font-bold text-lg text-gray-800">Instax Mini 11</h4>
-                <p class="text-gray-500 text-sm mb-4 h-10 overflow-hidden">Lahzalarni muhrlovchi kamera.</p>
-                <div class="flex justify-between items-center">
-                    <span class="text-blue-600 font-bold">1 100 000 so'm</span>
-                    <button onclick="addToCart('Instax Mini 11', '1 100 000 so\'m')" class="bg-green-500 text-white w-10 h-10 rounded-full hover:bg-green-600 flex items-center justify-center font-bold">+</button>
-                </div>
-            </div>
-
-            <div class="bg-white p-5 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300">
-                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" class="w-full h-48 object-cover rounded-xl mb-4">
-                <h4 class="font-bold text-lg text-gray-800">Nike Red Sport</h4>
-                <p class="text-gray-500 text-sm mb-4 h-10 overflow-hidden">Qulay sport krossovkalari.</p>
-                <div class="flex justify-between items-center">
-                    <span class="text-blue-600 font-bold">600 000 so'm</span>
-                    <button onclick="addToCart('Nike Red Sport', '600 000 so\'m')" class="bg-green-500 text-white w-10 h-10 rounded-full hover:bg-green-600 flex items-center justify-center font-bold">+</button>
-                </div>
-            </div>
-
-        </div>
     </main>
-
-    <section class="container mx-auto py-10 px-4 mt-10 border-t-2 border-gray-200">
-        <h3 class="text-xl font-bold mb-4 text-gray-700">Yangi mahsulot qo'shish (Admin)</h3>
-        <div class="bg-white p-6 rounded-xl shadow-md max-w-lg">
-            <div class="space-y-4">
-                <input type="text" id="pName" placeholder="Mahsulot nomi" class="w-full p-2 border rounded focus:outline-blue-500">
-                <input type="text" id="pPrice" placeholder="Narxi (masalan: 500 000 so'm)" class="w-full p-2 border rounded focus:outline-blue-500">
-                <select id="pCategory" class="w-full p-2 border rounded focus:outline-blue-500 bg-white">
-    <option value="Elektronika">Elektronika</option>
-    <option value="Kiyim">Kiyim</option>
-    <option value="Aksessuar">Aksessuar</option>
-    <option value="Parfumeriya">Parfumeriya</option>
-</select>
-                <input type="text" id="pImg" placeholder="Rasm manzili (URL)" class="w-full p-2 border rounded focus:outline-blue-500">
-                <button onclick="addProduct()" class="w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700 transition">Saytga qo'shish</button>
-            </div>
-        </div>
-    </section>
 
     <footer class="bg-gray-800 text-white py-6 text-center mt-12 text-sm">
         <p>&copy; 2026 Online Shop BFF. Barcha huquqlar himoyalangan.</p>
