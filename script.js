@@ -1,15 +1,38 @@
-let cart = JSON.parse(localStorage.getItem('cart')) || [];
-let products = JSON.parse(localStorage.getItem('myProducts')) || [];
-let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+// 1. Firebase havola (oxiriga .json qo'shilgan)
+const databaseURL = "https://my-shop-bff-default-rtdb.firebaseio.com/products.json";
 
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+let products = [];
+
+// Sayt yuklanganda bazadan ma'lumotlarni yuklab olish
 window.onload = function() {
-    renderStoredProducts();
+    fetchProducts();
     updateCartUI();
     updateWishlistUI();
     checkTheme();
 };
 
-function addProduct() {
+// 2. Firebase'dan mahsulotlarni o'qib olish (GET)
+async function fetchProducts() {
+    try {
+        const response = await fetch(databaseURL);
+        const data = await response.json();
+        products = [];
+        if (data) {
+            // Firebase obyekt formatida beradi, uni arrayga o'tkazamiz
+            Object.keys(data).forEach(key => {
+                products.push({ id: key, ...data[key] });
+            });
+        }
+        renderStoredProducts();
+    } catch (error) {
+        console.error("Ma'lumot olishda xato:", error);
+    }
+}
+
+// 3. Yangi mahsulot qo'shish (POST)
+async function addProduct() {
     const name = document.getElementById('pName').value;
     const price = document.getElementById('pPrice').value;
     const img = document.getElementById('pImg').value;
@@ -17,30 +40,47 @@ function addProduct() {
 
     if (name && price && img) {
         const newObj = { name, price, img, category };
-        products.push(newObj);
-        localStorage.setItem('myProducts', JSON.stringify(products));
-        alert("Mahsulot qo'shildi!");
-        location.reload();
+        try {
+            await fetch(databaseURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newObj)
+            });
+            alert("Mahsulot barcha qurilmalar uchun qo'shildi!");
+            // Formani tozalash
+            document.getElementById('pName').value = '';
+            document.getElementById('pPrice').value = '';
+            document.getElementById('pImg').value = '';
+            fetchProducts(); // Ro'yxatni yangilash
+        } catch (error) {
+            alert("Xatolik yuz berdi!");
+        }
     } else {
         alert("Iltimos, barcha maydonlarni to'ldiring!");
     }
 }
 
-function deleteProduct(index) {
+// 4. Mahsulotni o'chirish (DELETE)
+async function deleteProduct(id) {
     if (confirm("Ushbu mahsulotni o'chirmoqchimisiz?")) {
-        products.splice(index, 1);
-        localStorage.setItem('myProducts', JSON.stringify(products));
-        renderStoredProducts();
+        const deleteURL = `https://my-shop-bff-default-rtdb.firebaseio.com/products/${id}.json`;
+        try {
+            await fetch(deleteURL, { method: 'DELETE' });
+            fetchProducts(); // Ro'yxatni yangilash
+        } catch (error) {
+            alert("O'chirishda xatolik!");
+        }
     }
 }
 
+// 5. Mahsulotlarni ekranga chiqarish
 function displayProduct(product, index) {
     const productGrid = document.getElementById('product-grid');
     if (!productGrid) return;
 
-    // Admin sahifada bo'lsak X tugmasini ko'rsatamiz, asosiyda esa yo'q
     const isAdmin = window.isAdmin === true;
-    const deleteBtn = isAdmin ? `<button onclick="deleteProduct(${index})" class="absolute top-2 right-2 bg-red-500 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs z-10">✕</button>` : '';
+    // O'chirish tugmasi uchun endi index emas, Firebase ID (product.id) ishlatiladi
+    const deleteBtn = isAdmin ? `<button onclick="deleteProduct('${product.id}')" class="absolute top-2 right-2 bg-red-500 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs z-10">✕</button>` : '';
 
     const productHTML = `
         <div class="bg-white p-5 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 relative group product-card" data-category="${product.category}">
@@ -65,7 +105,7 @@ function renderStoredProducts() {
     }
 }
 
-// Qidirish funksiyasi
+// 6. Qidiruv va Filtrlash
 function filterProducts() {
     const term = document.getElementById('searchInput').value.toLowerCase();
     const cards = document.querySelectorAll('.product-card');
@@ -75,7 +115,6 @@ function filterProducts() {
     });
 }
 
-// Kategoriya bo'yicha saralash
 function filterCategory(cat) {
     const cards = document.querySelectorAll('.product-card');
     cards.forEach(card => {
@@ -84,16 +123,19 @@ function filterCategory(cat) {
     });
 }
 
-// Qolgan funksiyalar (Cart, Wishlist, DarkMode) avvalgi kod bilan bir xil...
+// 7. Savatcha, Sevimlilar va Tungi rejim
 function updateCartUI() {
-    const cartBtn = document.getElementById('cart-btn');
+    const cartBtn = document.getElementById('cart-btn') || document.querySelector('button[onclick="showCart()"]');
     if (cartBtn) cartBtn.innerText = `Savatcha (${cart.length})`;
 }
+
 function addToCart(name, price) {
     cart.push({ name, price });
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCartUI();
+    alert(name + " savatchaga qo'shildi!");
 }
+
 function toggleWishlist(index) {
     const product = products[index];
     const exists = wishlist.findIndex(w => w.name === product.name);
@@ -102,22 +144,27 @@ function toggleWishlist(index) {
     localStorage.setItem('wishlist', JSON.stringify(wishlist));
     updateWishlistUI();
 }
+
 function updateWishlistUI() {
     const count = document.getElementById('wishlist-count');
     if (count) count.innerText = wishlist.length;
 }
+
 function toggleDarkMode() {
     document.body.classList.toggle('dark');
     const isDark = document.body.classList.contains('dark');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
+
 function checkTheme() {
     if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
 }
+
 function showCart() {
     if (cart.length === 0) alert("Savatcha bo'sh");
-    else alert("Savatchada " + cart.length + " ta tovar bor");
+    else alert("Savatchada " + cart.length + " ta mahsulot bor.");
 }
+
 function showWishlist() {
     if (wishlist.length === 0) alert("Sevimlilar bo'sh");
     else alert("Siz yoqtirgan tovarlar soni: " + wishlist.length);
